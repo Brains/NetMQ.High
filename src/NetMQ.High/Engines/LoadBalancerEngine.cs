@@ -17,6 +17,7 @@ namespace NetMQ.High.Engines
         private RouterSocket m_frontend;
         private RouterSocket m_backend;        
         private IDictionary<string, Service> m_services;
+        //private NetMQPoller poller;
 
         class Service
         {
@@ -127,6 +128,7 @@ namespace NetMQ.High.Engines
         {
             m_frontend.Dispose();
             m_backend.Dispose();
+            Console.WriteLine("Cleanup");
         }
 
         protected override void OnShimCommand(string command)

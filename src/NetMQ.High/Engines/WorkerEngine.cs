@@ -38,10 +38,12 @@ namespace NetMQ.High.Engines
         {
             Codec.Receive(m_workerSocket);
 
+            Console.WriteLine("OnWorkerReady: " + Codec.Id);
+
             if (Codec.Id == Codec.MessageId.Message)
             {
                 bool oneway = Codec.Message.OneWay == 1;
-                object message = m_serializer.Deserialize(Codec.Message.Subject, Codec.Message.Body, 0, Codec.Message.Body.Length);
+                object message = m_serializer.Deserialize(Codec.Message.Subject, Codec.Message.Body, 0, Codec.Message.Body.Length);                
 
                 ulong messageId = Codec.Message.MessageId;
                 string service = Codec.Message.Service;

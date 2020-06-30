@@ -25,7 +25,7 @@ namespace NetMQ.High
 	/// <summary>
 	/// Client Server protocol
 	/// </summary>
-	internal class Codec
+	public class Codec
 	{
 		public class MessageException : Exception
 		{
@@ -147,6 +147,7 @@ namespace NetMQ.High
 
 				// RelatedMessageId
 				m.PutNumber8(RelatedMessageId);
+                //Console.WriteLine("Write: " + MessageId + "; " + RelatedMessageId);
 
 				// Service
 				if (Service != null) 						
@@ -179,10 +180,10 @@ namespace NetMQ.High
 
 			internal void Read(Codec m)
 			{
-				int listSize;
-				int hashSize;
+				//int listSize;
+				//int hashSize;
 				int chunkSize;
-				byte[] guidBytes;
+				//byte[] guidBytes;
 
 				// MessageId
 				MessageId = m.GetNumber8();
@@ -190,8 +191,10 @@ namespace NetMQ.High
 				// RelatedMessageId
 				RelatedMessageId = m.GetNumber8();
 
-				// Service
-				Service = m.GetLongString();            
+                //Console.WriteLine("Read: " + MessageId + "; " + RelatedMessageId);
+
+                // Service
+                Service = m.GetLongString();            
 
 				// Subject
 				Subject = m.GetLongString();            
@@ -258,10 +261,10 @@ namespace NetMQ.High
 
 			internal void Read(Codec m)
 			{
-				int listSize;
-				int hashSize;
-				int chunkSize;
-				byte[] guidBytes;
+				//int listSize;
+				//int hashSize;
+				//int chunkSize;
+				//byte[] guidBytes;
 
 				// Service
 				Service = m.GetLongString();            
@@ -321,10 +324,10 @@ namespace NetMQ.High
 
 			internal void Read(Codec m)
 			{
-				int listSize;
-				int hashSize;
-				int chunkSize;
-				byte[] guidBytes;
+				//int listSize;
+				//int hashSize;
+				//int chunkSize;
+				//byte[] guidBytes;
 
 				// RelatedMessageId
 				RelatedMessageId = m.GetNumber8();

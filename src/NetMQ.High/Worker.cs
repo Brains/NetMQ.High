@@ -8,7 +8,7 @@ using NetMQ.High.Serializers;
 
 namespace NetMQ.High
 {
-    class Worker : IDisposable
+    public class Worker : IDisposable
     {
         private NetMQActor m_actor;
 

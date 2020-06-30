@@ -2,7 +2,7 @@ using NetMQ.Sockets;
 
 namespace NetMQ.High.Engines
 {
-    internal abstract class BaseEngine : IShimHandler
+    public abstract class BaseEngine : IShimHandler
     {
         protected NetMQPoller Poller { get; private set; }
         public PairSocket Shim { get; private set; }

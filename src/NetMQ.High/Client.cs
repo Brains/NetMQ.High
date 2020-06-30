@@ -31,19 +31,38 @@ namespace NetMQ.High
 
         }
 
+        public void Connect(string address)
+        {
+            //TODO: What if few calls to Connect in row?
+            //if (queue != null && actor != null && 
+            //   (!actor.IsDisposed || !queue.IsDisposed))
+            //    Dispose();
+
+            m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
+            var serializer = new BinarySerializer();
+            var engine = new ClientEngine(serializer, m_outgoingQueue, address);
+            m_actor = NetMQActor.Create(engine);
+        }
+
         /// <summary>
         /// Send a request to the server and return the reply
         /// </summary>
         /// <param name="service">Service the message should route to</param>
         /// <param name="message">Message to send</param>
         /// <returns>Reply from server</returns>
-        public Task<object> SendRequestAsync(string service, object message)
+        /// 
+        async Task RaiseEventWhenTaskCompleted(Task task)
         {
-            var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<object>(), service, message, false);
+            await task;
+            Console.WriteLine("Completed task");
+        }
+
+        public Task<byte[]> SendRequestAsync(string service, byte[] message)
+        {
+            var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
 
             // NetMQQueue is thread safe, so no need to lock
             m_outgoingQueue.Enqueue(outgoingMessage);
-
             return outgoingMessage.TaskCompletionSource.Task;
         }
 
@@ -52,7 +71,7 @@ namespace NetMQ.High
         /// </summary>
         /// <param name="service">Service the message should route to</param>
         /// <param name="message">Message to send</param>
-        public void SendOneWay(string service, object message)
+        public void SendOneWay(string service, byte[] message)
         {
             // NetMQQueue is thread safe, so no need to lock
             m_outgoingQueue.Enqueue(new ClientEngine.OutgoingMessage(null, service, message, true));

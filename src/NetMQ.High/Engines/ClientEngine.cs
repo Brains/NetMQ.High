@@ -10,9 +10,10 @@ namespace NetMQ.High.Engines
 {
     class ClientEngine : BaseEngine
     {
+
         public struct OutgoingMessage
         {
-            public OutgoingMessage(TaskCompletionSource<object> taskCompletionSource, string service, object message, bool oneway)
+            public OutgoingMessage(TaskCompletionSource<byte[]> taskCompletionSource, string service, byte[] message, bool oneway)
             {
                 Service = service;
                 Message = message;
@@ -20,26 +21,26 @@ namespace NetMQ.High.Engines
                 TaskCompletionSource = taskCompletionSource;
             }
 
-            public TaskCompletionSource<object> TaskCompletionSource { get; }
+            public TaskCompletionSource<byte[]> TaskCompletionSource { get; }
             public string Service { get; private set; }
-            public object Message { get; private set; }
+            public byte[] Message { get; private set; }
             public bool Oneway { get; private set; }
         }
 
         struct PendingMessage
         {
-            public PendingMessage(ulong messageId, TaskCompletionSource<object> taslCompletionSource)
+            public PendingMessage(ulong messageId, TaskCompletionSource<byte[]> taslCompletionSource)
             {
                 MessageId = messageId;
                 TaslCompletionSource = taslCompletionSource;
             }
 
             public ulong MessageId { get; private set; }
-            public TaskCompletionSource<object> TaslCompletionSource { get; private set; }
+            public TaskCompletionSource<byte[]> TaslCompletionSource { get; private set; }
         }
 
         private readonly ISerializer m_serializer;
-        private readonly NetMQQueue<OutgoingMessage> m_outgoingQueue;        
+        public readonly NetMQQueue<OutgoingMessage> m_outgoingQueue;        
         private readonly string m_address;        
         
         private Dictionary<UInt64, PendingMessage> m_pendingRequests;
@@ -53,6 +54,7 @@ namespace NetMQ.High.Engines
             m_address = address;
 
             m_pendingRequests = new Dictionary<ulong, PendingMessage>();
+            GC.KeepAlive(m_pendingRequests);
             m_nextMessageId = 0;
         }
 
@@ -73,15 +75,22 @@ namespace NetMQ.High.Engines
 
             UInt64 relatedMessageId = Codec.Id == Codec.MessageId.Message ? Codec.Message.RelatedMessageId : Codec.Error.RelatedMessageId;
 
-            PendingMessage pendingMessage;
+            PendingMessage pendingMessage;           
 
-            if (m_pendingRequests.TryGetValue(relatedMessageId, out pendingMessage))
-            {
+            bool chk = m_pendingRequests.TryGetValue(relatedMessageId, out pendingMessage);
+            Console.WriteLine("OnSocketReady IDs/Count: " + Codec.Message.MessageId + " ; " + Codec.Message.RelatedMessageId + "; " + m_pendingRequests.Count + "; " + chk);
+            if (chk)
+            {                
                 if (Codec.Id == Codec.MessageId.Message)
                 {
-                    var body = m_serializer.Deserialize(Codec.Message.Subject, Codec.Message.Body, 0,
-                        Codec.Message.Body.Length);
-                    pendingMessage.TaslCompletionSource.SetResult(body);
+                    //var body = m_serializer.Deserialize(Codec.Message.Subject, Codec.Message.Body, 0,
+                    //    Codec.Message.Body.Length);
+                    //
+                    if (!pendingMessage.TaslCompletionSource.Task.IsCompleted)
+                    {
+                        pendingMessage.TaslCompletionSource.SetResult(Codec.Message.Body);
+                        m_pendingRequests.Remove(relatedMessageId);
+                    }
                 }
                 else
                 {
@@ -92,6 +101,11 @@ namespace NetMQ.High.Engines
             else
             {
                 // TOOD: how to handle messages that don't exist or probably expired
+                Console.WriteLine("pendingMessage = false");
+                //foreach (KeyValuePair<UInt64,PendingMessage> msg in m_pendingRequests)
+                //{
+                //    Console.WriteLine("Key: " + msg.Key);
+                //}
             }
         }
 
@@ -105,23 +119,28 @@ namespace NetMQ.High.Engines
             throw new NotSupportedException();
         }
 
+
+
         private void OnOutgoingQueueReady(object sender, NetMQQueueEventArgs<OutgoingMessage> e)
         {
             var outgoingMessage = m_outgoingQueue.Dequeue();
 
-            var bodySegment = m_serializer.Serialize(outgoingMessage.Message);
-            byte[] body = new byte[bodySegment.Count];
-            Buffer.BlockCopy(bodySegment.Array, bodySegment.Offset, body, 0, bodySegment.Count);
+            //var bodySegment = m_serializer.Serialize(outgoingMessage.Message);
+            //byte[] body = new byte[bodySegment.Count];
+            //Buffer.BlockCopy(bodySegment.Array, bodySegment.Offset, body, 0, bodySegment.Count);
 
             UInt64 messageId = ++m_nextMessageId;
+            m_nextMessageId = messageId;
 
-            string subject = m_serializer.GetObjectSubject(outgoingMessage.Message);
-            
+            //string subject = m_serializer.GetObjectSubject(outgoingMessage.Message);
+            //Console.WriteLine("Codec.Message.RelatedMessageId: " + messageId + " ; " + Codec.Error.RelatedMessageId);
+
+
             Codec.Id = Codec.MessageId.Message;
             Codec.Message.MessageId = messageId;
             Codec.Message.Service = outgoingMessage.Service;
-            Codec.Message.Subject = subject;
-            Codec.Message.Body = body;
+            Codec.Message.Subject = "";
+            Codec.Message.Body = outgoingMessage.Message;
             Codec.Message.RelatedMessageId = 0;
 
             // one way message
@@ -132,10 +151,12 @@ namespace NetMQ.High.Engines
             else
             {
                 Codec.Message.OneWay = 0;
-
                 // add to pending requests dictionary
                 // TODO: we might want to create a pending message structure that will not hold reference to the message (can lead to GC second generation)
-                m_pendingRequests.Add(messageId, new PendingMessage(messageId, outgoingMessage.TaskCompletionSource));
+                var msg = new PendingMessage(messageId, outgoingMessage.TaskCompletionSource);
+                m_pendingRequests.Add(messageId, msg);
+                GC.KeepAlive(msg);
+                GC.KeepAlive(outgoingMessage);
             }
 
             Codec.Send(m_clientSocket);

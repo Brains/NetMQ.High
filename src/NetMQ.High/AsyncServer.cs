@@ -9,7 +9,8 @@ namespace NetMQ.High
     public class AsyncServer : IDisposable
     {        
         private NetMQActor m_actor;
-                
+        public AsyncServerEngine ServerEngine;
+
         /// <summary>
         /// Create new server with default serializer
         /// </summary>
@@ -25,8 +26,9 @@ namespace NetMQ.High
         /// <param name="serializer">Serializer to use to serialize messages</param>
         /// <param name="asyncHandler">Handler to handle messages from client</param>
         public AsyncServer(ISerializer serializer, IAsyncHandler asyncHandler)
-        {            
-            m_actor = NetMQActor.Create(new AsyncServerEngine(serializer, asyncHandler));
+        {
+            ServerEngine = new AsyncServerEngine(serializer, asyncHandler);
+            m_actor = NetMQActor.Create(ServerEngine);
         }
 
         /// <summary>
