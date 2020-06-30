@@ -31,19 +31,6 @@ namespace NetMQ.High
 
         }
 
-        public void Connect(string address)
-        {
-            //TODO: What if few calls to Connect in row?
-            //if (queue != null && actor != null && 
-            //   (!actor.IsDisposed || !queue.IsDisposed))
-            //    Dispose();
-
-            m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
-            var serializer = new BinarySerializer();
-            var engine = new ClientEngine(serializer, m_outgoingQueue, address);
-            m_actor = NetMQActor.Create(engine);
-        }
-
         /// <summary>
         /// Send a request to the server and return the reply
         /// </summary>
