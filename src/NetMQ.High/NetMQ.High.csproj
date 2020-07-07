@@ -71,12 +71,9 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="zproto\zproto_codec_cs.gsl" />
-    <None Include="zproto\zproto_lib.gsl" />
-    <None Include="zproto\zproto_lib_cs.gsl" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="zproto\ClientServer.xml" />
-    <Content Include="zproto\Example.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
