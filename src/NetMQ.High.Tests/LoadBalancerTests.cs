@@ -38,8 +38,9 @@ namespace NetMQ.High.Tests
                 // Wait for the lb to process the register
                 Thread.Sleep(100);
 
-                var reply = (string)client.SendRequestAsync("Hello", "World").Result;
-                Assert.That(reply == "Welcome");
+                var message = Encoding.ASCII.GetBytes("World");
+                var reply = client.SendRequestAsync("Hello", message).Result;
+                Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");
             }
         }
     }

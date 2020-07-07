@@ -17,13 +17,13 @@ namespace NetMQ.High.Tests
             {                
             }
 
-            public async Task<object> HandleRequestAsync(ulong messageId, uint connectionId, string service,object body)
+            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
             {
                 ConnectionId = connectionId;
-                return "Welcome";
+                return Encoding.ASCII.GetBytes("Welcome");
             }
 
-            public void HandleOneWay(ulong messageId, uint connectionId, string service, object body)
+            public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body)
             {
                                     
             }
@@ -43,8 +43,9 @@ namespace NetMQ.High.Tests
                 using (Client client = new Client("tcp://localhost:6666"))
                 {
                     // client to server
-                    var reply = (string) client.SendRequestAsync("Hello", "World").Result;
-                    Assert.That(reply == "Welcome");                    
+                    var message = Encoding.ASCII.GetBytes("World");
+                    var reply = client.SendRequestAsync("Hello", message).Result;
+                    Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");                    
                 }
             }    
         }
