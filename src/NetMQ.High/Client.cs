@@ -53,6 +53,15 @@ namespace NetMQ.High
             return outgoingMessage.TaskCompletionSource.Task;
         }
 
+        public Task<byte[]> SendRequestAsyncWithTimeout(string service, byte[] message)
+        {
+            var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
+
+            // NetMQQueue is thread safe, so no need to lock
+            m_outgoingQueue.Enqueue(outgoingMessage);
+            return outgoingMessage.TaskCompletionSource.Task;
+        }
+
         /// <summary>
         /// Send one way message to the server
         /// </summary>
