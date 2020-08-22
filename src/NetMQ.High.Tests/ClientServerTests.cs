@@ -30,7 +30,8 @@ namespace NetMQ.High.Tests
                     // client to server
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsync("Hello", message).Result;
-                    Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");                    
+                    var text = Encoding.ASCII.GetString(reply);
+                    Assert.That(text == "Welcome");                    
                 }
             }    
         }
@@ -43,12 +44,30 @@ namespace NetMQ.High.Tests
             public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
             {
                 await Task.Delay(delay);
-                return Encoding.ASCII.GetBytes("Delayed");
+                var text = $"Delayed for {delay} milliseconds";
+                return Encoding.ASCII.GetBytes(text);
             }
         }
 
         [Test]
-        public void RequestResponseWithTimeout()
+        public void RequestResponseBelowTimeout()
+        {
+            var handler = new DelayedHandler(1000);
+            using (var server = new AsyncServer(handler))
+            {
+                server.Bind("tcp://*:6666");
+                using (var client = new Client("tcp://localhost:6666"))
+                {
+                    var message = Encoding.ASCII.GetBytes("World");
+                    var reply = client.SendRequestAsyncWithTimeout("Hello", message, 2000).Result;
+                    var text = Encoding.ASCII.GetString(reply);
+                    Assert.That(text == "Delayed for 1000 milliseconds");
+                }
+            }    
+        }
+
+        [Test]
+        public void RequestResponseAboveTimeout()
         {
             var handler = new DelayedHandler(2000);
             using (var server = new AsyncServer(handler))
