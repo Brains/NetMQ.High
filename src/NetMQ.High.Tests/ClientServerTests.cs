@@ -54,10 +54,8 @@ namespace NetMQ.High.Tests
                 server.Bind("tcp://*:6666");
                 using (var client = new Client("tcp://localhost:6666"))
                 {
-                    // client to server
                     var message = Encoding.ASCII.GetBytes("World");
-                    var reply = client.SendRequestAsync("Hello", message).Result;
-                    Assert.That(Encoding.ASCII.GetString(reply) == "Delayed");                    
+                    Assert.Throws<TimeoutException>(async () => await client.SendRequestAsync("Hello", message));                    
                 }
             }    
         }
