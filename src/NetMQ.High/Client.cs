@@ -16,7 +16,7 @@ namespace NetMQ.High
         /// Create new client
         /// </summary>
         /// <param name="serializer">Serialize to to use to serialize the message to byte array</param>
-        /// <param name="address">Address of the server</param>        
+        /// <param name="address">Address of the server</param>
         public Client(ISerializer serializer, string address)
         {
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
@@ -24,9 +24,9 @@ namespace NetMQ.High
         }
 
         /// <summary>
-        /// Create new client with default serializer 
+        /// Create new client with default serializer
         /// </summary>
-        /// <param name="address">Address of the server</param>       
+        /// <param name="address">Address of the server</param>
         public Client(string address) : this(Global.DefaultSerializer, address)
         {
 
@@ -38,7 +38,7 @@ namespace NetMQ.High
         /// <param name="service">Service the message should route to</param>
         /// <param name="message">Message to send</param>
         /// <returns>Reply from server</returns>
-        /// 
+        ///
         async Task RaiseEventWhenTaskCompleted(Task task)
         {
             await task;
@@ -60,11 +60,11 @@ namespace NetMQ.High
             // NetMQQueue is thread safe, so no need to lock
             m_outgoingQueue.Enqueue(outgoing);
             return TimeoutAfter(
-                outgoing.TaskCompletionSource.Task, 
+                outgoing.TaskCompletionSource.Task,
                 TimeSpan.FromMilliseconds(timeout));
         }
 
-        public static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
+        private static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
         {
             using (var cancellation = new CancellationTokenSource())
             {
