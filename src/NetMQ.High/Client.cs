@@ -67,12 +67,14 @@ namespace NetMQ.High
 
         public static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
         {
-            using (var timeoutCancellationTokenSource = new CancellationTokenSource())
+            using (var cancellation = new CancellationTokenSource())
             {
-                var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
-                if (completedTask == task)
+                var delay = Task.Delay(timeout, cancellation.Token);
+                var completed = await Task.WhenAny(task, delay);
+
+                if (completed == task)
                 {
-                    timeoutCancellationTokenSource.Cancel();
+                    cancellation.Cancel();
                     return await task;  // Very important in order to propagate exceptions
                 }
                 else
