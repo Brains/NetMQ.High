@@ -35,12 +35,14 @@ namespace NetMQ.High.Tests
             }    
         }
 
-        class SlowHandler : IAsyncHandler
+        class DelayedHandler : IAsyncHandler
         {
+            readonly int delay;
+            public DelayedHandler(int delay) => this.delay = delay;
             public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body) { }
             public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
             {
-                await Task.Delay(4000);
+                await Task.Delay(delay);
                 return Encoding.ASCII.GetBytes("Delayed");
             }
         }
@@ -48,14 +50,15 @@ namespace NetMQ.High.Tests
         [Test]
         public void RequestResponseWithTimeout()
         {
-            var handler = new SlowHandler();
+            var handler = new DelayedHandler(2000);
             using (var server = new AsyncServer(handler))
             {
                 server.Bind("tcp://*:6666");
                 using (var client = new Client("tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
-                    Assert.Throws<TimeoutException>(async () => await client.SendRequestAsyncWithTimeout("Hello", message, 1000));                    
+                    Assert.Throws<TimeoutException>(
+                        async () => await client.SendRequestAsyncWithTimeout("Hello", message, 1000));                    
                 }
             }    
         }
