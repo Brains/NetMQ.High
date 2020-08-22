@@ -55,7 +55,7 @@ namespace NetMQ.High.Tests
                 using (var client = new Client("tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
-                    Assert.Throws<TimeoutException>(async () => await client.SendRequestAsyncWithTimeout("Hello", message));                    
+                    Assert.Throws<TimeoutException>(async () => await client.SendRequestAsyncWithTimeout("Hello", message, 1000));                    
                 }
             }    
         }
