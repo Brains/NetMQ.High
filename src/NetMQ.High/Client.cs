@@ -60,14 +60,15 @@ namespace NetMQ.High
 
             // NetMQQueue is thread safe, so no need to lock
             m_outgoingQueue.Enqueue(outgoingMessage);
-            return outgoingMessage.TaskCompletionSource.Task;
+            var task = outgoingMessage.TaskCompletionSource.Task;
+            var res = TimeoutAfter(task, TimeSpan.FromSeconds(1));
+            return res;
         }
 
         public static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
         {
             using (var timeoutCancellationTokenSource = new CancellationTokenSource())
             {
-
                 var completedTask = await Task.WhenAny(task, Task.Delay(timeout, timeoutCancellationTokenSource.Token));
                 if (completedTask == task)
                 {
