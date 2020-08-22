@@ -12,23 +12,10 @@ namespace NetMQ.High.Tests
     class ClientServerTests
     {        
         class Handler : IAsyncHandler
-        {            
-            public Handler()
-            {                
-            }
-
-            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
-            {
-                ConnectionId = connectionId;
-                return Encoding.ASCII.GetBytes("Welcome");
-            }
-
-            public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body)
-            {
-                                    
-            }
-
-            public uint ConnectionId { get; private set; }
+        {
+            public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body) { }
+            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body) => 
+                Encoding.ASCII.GetBytes("Welcome");
         }     
 
         [Test]
