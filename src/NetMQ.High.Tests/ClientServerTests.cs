@@ -20,6 +20,7 @@ namespace NetMQ.High.Tests
             public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
             {
                 ConnectionId = connectionId;
+                await Task.Delay(5000);
                 return Encoding.ASCII.GetBytes("Welcome");
             }
 

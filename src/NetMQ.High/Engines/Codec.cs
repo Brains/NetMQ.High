@@ -427,7 +427,7 @@ namespace NetMQ.High
 
 				try
 				{
-					input.Receive(ref routingIdMsg);
+				    input.TryReceive(ref routingIdMsg, TimeSpan.FromSeconds(2));
 
 					if (!routingIdMsg.HasMore) 
 					{
@@ -454,7 +454,7 @@ namespace NetMQ.High
 
 			try
 			{
-				input.Receive(ref msg);
+				input.TryReceive(ref msg, TimeSpan.FromSeconds(2));
 
 				m_offset = 0;
 				m_buffer = msg.Data;
@@ -543,7 +543,7 @@ namespace NetMQ.High
 				}
 
 				//  Send the data frame				
-				output.Send(ref msg, false);       
+				output.TrySend(ref msg, TimeSpan.FromSeconds(2), false);       
 			}
 			finally
 			{
