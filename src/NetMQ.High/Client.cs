@@ -56,13 +56,12 @@ namespace NetMQ.High
 
         public Task<byte[]> SendRequestAsyncWithTimeout(string service, byte[] message, int timeout)
         {
-            var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
-
+            var outgoing = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
             // NetMQQueue is thread safe, so no need to lock
-            m_outgoingQueue.Enqueue(outgoingMessage);
-            var task = outgoingMessage.TaskCompletionSource.Task;
-            var res = TimeoutAfter(task, TimeSpan.FromMilliseconds(timeout));
-            return res;
+            m_outgoingQueue.Enqueue(outgoing);
+            return TimeoutAfter(
+                outgoing.TaskCompletionSource.Task, 
+                TimeSpan.FromMilliseconds(timeout));
         }
 
         public static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
