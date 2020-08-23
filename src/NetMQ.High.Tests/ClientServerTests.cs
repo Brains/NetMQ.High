@@ -10,13 +10,13 @@ namespace NetMQ.High.Tests
 {
     [TestFixture]
     class ClientServerTests
-    {        
+    {
         class Handler : IAsyncHandler
         {
             public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body) { }
-            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body) => 
+            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body) =>
                 Encoding.ASCII.GetBytes("Welcome");
-        }     
+        }
 
         [Test]
         public void RequestResponse()
@@ -31,9 +31,9 @@ namespace NetMQ.High.Tests
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsync("Hello", message).Result;
                     var text = Encoding.ASCII.GetString(reply);
-                    Assert.That(text == "Welcome");                    
+                    Assert.That(text == "Welcome");
                 }
-            }    
+            }
         }
 
         class DelayedHandler : IAsyncHandler
@@ -63,7 +63,7 @@ namespace NetMQ.High.Tests
                     var text = Encoding.ASCII.GetString(reply);
                     Assert.That(text == "Delayed for 1000 milliseconds");
                 }
-            }    
+            }
         }
 
         [Test]
@@ -77,9 +77,9 @@ namespace NetMQ.High.Tests
                 {
                     var message = Encoding.ASCII.GetBytes("World");
                     Assert.Throws<TimeoutException>(
-                        async () => await client.SendRequestAsyncWithTimeout("Hello", message, 1000));                    
+                        async () => await client.SendRequestAsyncWithTimeout("Hello", message, 1000));
                 }
-            }    
+            }
         }
     }
 }

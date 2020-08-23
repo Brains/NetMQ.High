@@ -45,6 +45,25 @@ namespace NetMQ.High
             Console.WriteLine("Completed task");
         }
 
+        static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
+        {
+            using (var cancellation = new CancellationTokenSource())
+            {
+                var delay = Task.Delay(timeout, cancellation.Token);
+                var completed = await Task.WhenAny(task, delay);
+
+                if (completed == task)
+                {
+                    cancellation.Cancel();
+                    return await task;  // Very important in order to propagate exceptions
+                }
+                else
+                {
+                    throw new TimeoutException("The operation has timed out.");
+                }
+            }
+        }
+
         public Task<byte[]> SendRequestAsync(string service, byte[] message)
         {
             var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
@@ -64,24 +83,6 @@ namespace NetMQ.High
                 TimeSpan.FromMilliseconds(timeout));
         }
 
-        private static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
-        {
-            using (var cancellation = new CancellationTokenSource())
-            {
-                var delay = Task.Delay(timeout, cancellation.Token);
-                var completed = await Task.WhenAny(task, delay);
-
-                if (completed == task)
-                {
-                    cancellation.Cancel();
-                    return await task;  // Very important in order to propagate exceptions
-                }
-                else
-                {
-                    throw new TimeoutException("The operation has timed out.");
-                }
-            }
-        }
         /// <summary>
         /// Send one way message to the server
         /// </summary>
