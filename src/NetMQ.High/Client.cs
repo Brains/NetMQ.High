@@ -53,15 +53,10 @@ namespace NetMQ.High
                 var delay = Task.Delay(timeout, cancellation.Token);
                 var completed = await Task.WhenAny(task, delay);
 
-                if (completed == task)
-                {
-                    cancellation.Cancel();
-                    return await task;  // Very important in order to propagate exceptions
-                }
-                else
-                {
-                    throw new TimeoutException("The operation has timed out.");
-                }
+                if (completed != task) throw new TimeoutException("The operation has timed out.");
+
+                cancellation.Cancel();
+                return await task;  // Very important in order to propagate exceptions
             }
         }
 
