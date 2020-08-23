@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.2.4</Version>
+    <Authors>Doron Somech, Jeremiah Jeschke</Authors>
+    <Company>OfficeAutomata</Company>
+    <Description>NetMQ high is a sample project on how to write NetMQ components with the Actor pattern and ZProto. Additionally, it was adapted to work with MessagePack.</Description>
+    <PackageProjectUrl>https://github.com/OfficeAutomata/NetMQ.High</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Brains/NetMQ.High.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>C#, NetMQ, ZProto, MessagePack</PackageTags>
+    <PackageReleaseNotes>Fix wrong lib assets</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
