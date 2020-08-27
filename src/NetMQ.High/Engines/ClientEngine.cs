@@ -8,7 +8,7 @@ using NetMQ.Sockets;
 
 namespace NetMQ.High.Engines
 {
-    class ClientEngine : BaseEngine
+    public class ClientEngine : BaseEngine
     {
 
         public struct OutgoingMessage

@@ -9,13 +9,13 @@ namespace NetMQ.High
     public class Client : IDisposable
     {
         private NetMQActor m_actor;
-        private NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
+        protected NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
 
         /// <summary>
         /// Create new client
         /// </summary>
         /// <param name="serializer">Serialize to to use to serialize the message to byte array</param>
-        /// <param name="address">Address of the server</param>        
+        /// <param name="address">Address of the server</param>
         public Client(ISerializer serializer, string address)
         {
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
@@ -23,9 +23,9 @@ namespace NetMQ.High
         }
 
         /// <summary>
-        /// Create new client with default serializer 
+        /// Create new client with default serializer
         /// </summary>
-        /// <param name="address">Address of the server</param>       
+        /// <param name="address">Address of the server</param>
         public Client(string address) : this(Global.DefaultSerializer, address)
         {
 
@@ -37,14 +37,14 @@ namespace NetMQ.High
         /// <param name="service">Service the message should route to</param>
         /// <param name="message">Message to send</param>
         /// <returns>Reply from server</returns>
-        /// 
+        ///
         async Task RaiseEventWhenTaskCompleted(Task task)
         {
             await task;
             Console.WriteLine("Completed task");
         }
 
-        public Task<byte[]> SendRequestAsync(string service, byte[] message)
+        public virtual Task<byte[]> SendRequestAsync(string service, byte[] message)
         {
             var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
 

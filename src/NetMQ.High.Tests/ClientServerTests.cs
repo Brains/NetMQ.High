@@ -10,11 +10,11 @@ namespace NetMQ.High.Tests
 {
     [TestFixture]
     class ClientServerTests
-    {        
+    {
         class Handler : IAsyncHandler
-        {            
+        {
             public Handler()
-            {                
+            {
             }
 
             public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
@@ -25,11 +25,11 @@ namespace NetMQ.High.Tests
 
             public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body)
             {
-                                    
+
             }
 
             public uint ConnectionId { get; private set; }
-        }     
+        }
 
         [Test]
         public void RequestResponse()
@@ -45,9 +45,9 @@ namespace NetMQ.High.Tests
                     // client to server
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsync("Hello", message).Result;
-                    Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");                    
+                    Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");
                 }
-            }    
+            }
         }
     }
 }
