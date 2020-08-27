@@ -4,8 +4,10 @@ using NetMQ.High.Engines;
 
 namespace NetMQ.High
 {
-    public class ClientSafe : Client
+    public class ClientSafe : ClientTimeout
     {
+        public ClientSafe(double timeout) : base(timeout) { }
+
         public new Task Connect(string address)
         {
             var task = new TaskCompletionSource<object>();
