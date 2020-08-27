@@ -1,7 +1,7 @@
-﻿namespace NetMQ.High
+namespace NetMQ.High
 {
     public class ClientSafe : Client
     {
-        public ClientSafe(string address) : base(address) { }
+        public ClientSafe(string address) { }
     }
 }
