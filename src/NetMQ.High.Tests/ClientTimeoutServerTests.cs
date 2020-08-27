@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace NetMQ.High.Tests
 {
     [TestFixture]
-    class TimeoutClientServerTests
+    class ClientTimeoutServerTests
     {
         class DelayedHandler : IAsyncHandler
         {
@@ -22,13 +22,13 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void RequestResponseBelowTimeout()
+        public void RequestResponse_BelowTimeout_ReturnsTextReply()
         {
             var handler = new DelayedHandler(1000);
             using (var server = new AsyncServer(handler))
             {
                 server.Bind("tcp://*:6666");
-                using (var client = new TimeoutClient(2000, "tcp://localhost:6666"))
+                using (var client = new ClientTimeout(2000, "tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsyncWithTimeout("Hello", message).Result;
@@ -39,13 +39,13 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void RequestResponseAboveTimeout()
+        public void RequestResponse_AboveTimeout_ThrowsTimeoutException()
         {
             var handler = new DelayedHandler(2000);
             using (var server = new AsyncServer(handler))
             {
                 server.Bind("tcp://*:6666");
-                using (var client = new TimeoutClient(1000, "tcp://localhost:6666"))
+                using (var client = new ClientTimeout(1000, "tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
                     Assert.Throws<TimeoutException>(
