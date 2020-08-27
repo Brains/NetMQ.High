@@ -9,6 +9,7 @@ namespace NetMQ.High
     {
         public TimeoutClient(string address) : base(address) { }
 
+        // Answer by Lawrence Johnston at https://stackoverflow.com/questions/4238345/asynchronously-wait-for-taskt-to-complete-with-timeout
         static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
         {
             using (var cancellation = new CancellationTokenSource())

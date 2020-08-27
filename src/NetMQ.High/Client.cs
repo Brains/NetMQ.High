@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using NetMQ.High.Engines;
 using NetMQ.High.Serializers;
@@ -44,8 +43,6 @@ namespace NetMQ.High
             await task;
             Console.WriteLine("Completed task");
         }
-
-        // Answer by Lawrence Johnston at https://stackoverflow.com/questions/4238345/asynchronously-wait-for-taskt-to-complete-with-timeout
 
         public Task<byte[]> SendRequestAsync(string service, byte[] message)
         {
