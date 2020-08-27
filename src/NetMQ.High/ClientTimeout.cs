@@ -5,9 +5,12 @@ using NetMQ.High.Engines;
 
 namespace NetMQ.High
 {
-    public class TimeoutClient : Client
+    public class ClientTimeout : Client
     {
-        public TimeoutClient(string address) : base(address) { }
+        readonly double timeout;
+
+        public ClientTimeout(double timeout, string address) : base(address) =>
+            this.timeout = timeout;
 
         // Answer by Lawrence Johnston at https://stackoverflow.com/questions/4238345/asynchronously-wait-for-taskt-to-complete-with-timeout
         static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
@@ -24,14 +27,9 @@ namespace NetMQ.High
             }
         }
 
-        public Task<byte[]> SendRequestAsyncWithTimeout(string service, byte[] message, int timeout)
-        {
-            var outgoing = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
-            // NetMQQueue is thread safe, so no need to lock
-            m_outgoingQueue.Enqueue(outgoing);
-            return TimeoutAfter(
-                outgoing.TaskCompletionSource.Task,
+        public override Task<byte[]> SendRequestAsync(string service, byte[] message) => 
+            TimeoutAfter(
+                base.SendRequestAsync(service, message), 
                 TimeSpan.FromMilliseconds(timeout));
-        }
     }
 }

@@ -44,7 +44,7 @@ namespace NetMQ.High
             Console.WriteLine("Completed task");
         }
 
-        public Task<byte[]> SendRequestAsync(string service, byte[] message)
+        public virtual Task<byte[]> SendRequestAsync(string service, byte[] message)
         {
             var outgoingMessage = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
 

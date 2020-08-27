@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace NetMQ.High.Tests
 {
     [TestFixture]
-    class TimeoutClientServerTests
+    class ClientTimeoutServerTests
     {
         class DelayedHandler : IAsyncHandler
         {
@@ -22,16 +22,16 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void RequestResponseBelowTimeout()
+        public void RequestResponse_BelowTimeout_ReturnsTextReply()
         {
             var handler = new DelayedHandler(1000);
             using (var server = new AsyncServer(handler))
             {
                 server.Bind("tcp://*:6666");
-                using (var client = new TimeoutClient("tcp://localhost:6666"))
+                using (var client = new ClientTimeout(2000, "tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
-                    var reply = client.SendRequestAsyncWithTimeout("Hello", message, 2000).Result;
+                    var reply = client.SendRequestAsync("Hello", message).Result;
                     var text = Encoding.ASCII.GetString(reply);
                     Assert.That(text == "Delayed for 1000 milliseconds");
                 }
@@ -39,17 +39,17 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void RequestResponseAboveTimeout()
+        public void RequestResponse_AboveTimeout_ThrowsTimeoutException()
         {
             var handler = new DelayedHandler(2000);
             using (var server = new AsyncServer(handler))
             {
                 server.Bind("tcp://*:6666");
-                using (var client = new TimeoutClient("tcp://localhost:6666"))
+                using (var client = new ClientTimeout(1000, "tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
                     Assert.Throws<TimeoutException>(
-                        async () => await client.SendRequestAsyncWithTimeout("Hello", message, 1000));
+                        async () => await client.SendRequestAsync("Hello", message));
                 }
             }
         }
