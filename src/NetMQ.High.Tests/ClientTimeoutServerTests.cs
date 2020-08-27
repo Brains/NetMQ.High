@@ -31,7 +31,7 @@ namespace NetMQ.High.Tests
                 using (var client = new ClientTimeout(2000, "tcp://localhost:6666"))
                 {
                     var message = Encoding.ASCII.GetBytes("World");
-                    var reply = client.SendRequestAsyncWithTimeout("Hello", message).Result;
+                    var reply = client.SendRequestAsync("Hello", message).Result;
                     var text = Encoding.ASCII.GetString(reply);
                     Assert.That(text == "Delayed for 1000 milliseconds");
                 }
@@ -49,7 +49,7 @@ namespace NetMQ.High.Tests
                 {
                     var message = Encoding.ASCII.GetBytes("World");
                     Assert.Throws<TimeoutException>(
-                        async () => await client.SendRequestAsyncWithTimeout("Hello", message));
+                        async () => await client.SendRequestAsync("Hello", message));
                 }
             }
         }

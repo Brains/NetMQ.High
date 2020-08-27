@@ -31,15 +31,5 @@ namespace NetMQ.High
             TimeoutAfter(
                 base.SendRequestAsync(service, message), 
                 TimeSpan.FromMilliseconds(timeout));
-
-        public Task<byte[]> SendRequestAsyncWithTimeout(string service, byte[] message)
-        {
-            var outgoing = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
-            // NetMQQueue is thread safe, so no need to lock
-            m_outgoingQueue.Enqueue(outgoing);
-            return TimeoutAfter(
-                outgoing.TaskCompletionSource.Task,
-                TimeSpan.FromMilliseconds(timeout));
-        }
     }
 }
