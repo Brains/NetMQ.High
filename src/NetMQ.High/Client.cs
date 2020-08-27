@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NetMQ.High.Engines;
@@ -8,8 +8,8 @@ namespace NetMQ.High
 {
     public class Client : IDisposable
     {
-        readonly ISerializer serializer;
-        private NetMQActor m_actor;
+        protected readonly ISerializer serializer;
+        protected NetMQActor m_actor;
         protected NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace NetMQ.High
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
         }
 
-        public void Connect(string address)
+        public virtual void Connect(string address)
         {
             var clientEngine = new ClientEngine(serializer, m_outgoingQueue, address);
             m_actor = NetMQActor.Create(clientEngine);
