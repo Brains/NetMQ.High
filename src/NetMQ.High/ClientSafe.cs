@@ -6,7 +6,7 @@ namespace NetMQ.High
 {
     public class ClientSafe : ClientTimeout
     {
-        public ClientSafe(double timeout) : base(timeout) { }
+        public ClientSafe(int timeout) : base(timeout) { }
 
         public new Task Connect(string address)
         {
