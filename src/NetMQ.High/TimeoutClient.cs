@@ -27,6 +27,11 @@ namespace NetMQ.High
             }
         }
 
+        public override Task<byte[]> SendRequestAsync(string service, byte[] message) => 
+            TimeoutAfter(
+                base.SendRequestAsync(service, message), 
+                TimeSpan.FromMilliseconds(timeout));
+
         public Task<byte[]> SendRequestAsyncWithTimeout(string service, byte[] message)
         {
             var outgoing = new ClientEngine.OutgoingMessage(new TaskCompletionSource<byte[]>(), service, message, false);
