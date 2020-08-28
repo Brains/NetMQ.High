@@ -27,10 +27,11 @@ namespace NetMQ.High.Tests
             var handler = new DelayedHandler(1000);
             using (var server = new AsyncServer(handler))
             {
+                server.Init();
                 server.Bind("tcp://*:6666");
-                using (var client = new ClientTimeout(2000))
+                using (var client = new ClientTimeout(2000, "tcp://localhost:6666"))
                 {
-                    client.Connect("tcp://localhost:6666");
+                    client.Init();
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsync("Hello", message).Result;
                     var text = Encoding.ASCII.GetString(reply);
@@ -46,9 +47,9 @@ namespace NetMQ.High.Tests
             using (var server = new AsyncServer(handler))
             {
                 server.Bind("tcp://*:6666");
-                using (var client = new ClientTimeout(1000))
+                using (var client = new ClientTimeout(1000, "tcp://localhost:6666"))
                 {
-                    client.Connect("tcp://localhost:6666");
+                    client.Init();
                     var message = Encoding.ASCII.GetBytes("World");
                     Assert.Throws<TimeoutException>(
                         async () => await client.SendRequestAsync("Hello", message));

@@ -39,11 +39,12 @@ namespace NetMQ.High.Tests
             var serverHandler = new Handler();
             using (AsyncServer server = new AsyncServer(serverHandler))
             {
+                server.Init();
                 server.Bind("tcp://*:6666");
-                using (Client client = new Client())
+                using (Client client = new Client("tcp://localhost:6666"))
                 {
                     // client to server
-                    client.Connect("tcp://localhost:6666");
+                    client.Init();
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsync("Hello", message).Result;
                     Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");

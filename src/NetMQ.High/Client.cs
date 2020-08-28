@@ -8,7 +8,8 @@ namespace NetMQ.High
 {
     public class Client : IDisposable
     {
-        protected readonly ISerializer serializer;
+        protected readonly ISerializer Serializer;
+        protected string Address;
         protected NetMQActor m_actor;
         protected NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
 
@@ -16,15 +17,17 @@ namespace NetMQ.High
         /// Create new client
         /// </summary>
         /// <param name="serializer">Serialize to to use to serialize the message to byte array</param>
-        public Client(ISerializer serializer)
+        /// <param name="address">Address of the server</param>
+        public Client(ISerializer serializer, string address)
         {
-            this.serializer = serializer;
+            this.Serializer = serializer;
+            this.Address = address;
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
         }
 
-        public virtual void Connect(string address)
+        public virtual void Init()
         {
-            var clientEngine = new ClientEngine(serializer, m_outgoingQueue, address);
+            var clientEngine = new ClientEngine(Serializer, m_outgoingQueue, Address);
             m_actor = NetMQActor.Create(clientEngine);
         }
 
@@ -32,7 +35,7 @@ namespace NetMQ.High
         /// Create new client with default serializer
         /// </summary>
         /// <param name="address">Address of the server</param>
-        public Client() : this(Global.DefaultSerializer) { }
+        public Client(string address) : this(Global.DefaultSerializer, address) { }
 
         /// <summary>
         /// Send a request to the server and return the reply

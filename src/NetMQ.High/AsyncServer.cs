@@ -7,8 +7,10 @@ using NetMQ.High.Serializers;
 namespace NetMQ.High
 {
     public class AsyncServer : IDisposable
-    {        
-        private NetMQActor m_actor;
+    {
+        protected readonly ISerializer serializer;
+        protected readonly IAsyncHandler asyncHandler;
+        protected NetMQActor m_actor;
         public AsyncServerEngine ServerEngine;
 
         /// <summary>
@@ -27,6 +29,12 @@ namespace NetMQ.High
         /// <param name="asyncHandler">Handler to handle messages from client</param>
         public AsyncServer(ISerializer serializer, IAsyncHandler asyncHandler)
         {
+            this.serializer = serializer;
+            this.asyncHandler = asyncHandler;
+        }
+
+        public virtual void Init()
+        {
             ServerEngine = new AsyncServerEngine(serializer, asyncHandler);
             m_actor = NetMQActor.Create(ServerEngine);
         }
@@ -41,7 +49,7 @@ namespace NetMQ.High
             {
                 m_actor.SendMoreFrame(AsyncServerEngine.BindCommand).SendFrame(address);
             }
-        }       
+        }
 
         public void Dispose()
         {
