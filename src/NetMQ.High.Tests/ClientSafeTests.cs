@@ -40,44 +40,32 @@ namespace NetMQ.High.Tests
         public void AwaitClientTask_NullAddress_ThrowsNullReferenceException()
         {
             using (var client = new ClientSafe(null))
-                Assert.Throws<NullReferenceException>(async () =>
-                {
-                    client.Init();
-                    await client.Task;
-                });
+                Assert.Throws<NullReferenceException>(
+                    async () => { client.Init(); await client.Task; });
         }
 
         [Test]
         public void AwaitClientTask_EmptyAddress_ThrowsArgumentOutOfRangeException()
         {
             using (var client = new ClientSafe(""))
-                Assert.Throws<ArgumentOutOfRangeException>(async () =>
-                {
-                    client.Init();
-                    await client.Task;
-                });
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    async () => { client.Init(); await client.Task; });
         }
 
         [Test]
         public void AwaitClientTask_InvalidAddress_ThrowsArgumentOutOfRangeException()
         {
             using (var client = new ClientSafe("abc"))
-                Assert.Throws<ArgumentOutOfRangeException>(async () =>
-                {
-                    client.Init();
-                    await client.Task;
-                });
+                Assert.Throws<ArgumentOutOfRangeException>(
+                    async () => { client.Init(); await client.Task; });
         }
 
         [Test]
         public void AwaitClientTask_MissingEndpoint_ThrowsEndpointNotFoundException()
         {
             using (var client = new ClientSafe("inproc://test"))
-                Assert.Throws<EndpointNotFoundException>(async () =>
-                {
-                    client.Init();
-                    await client.Task;
-                });
+                Assert.Throws<EndpointNotFoundException>(
+                    async () => { client.Init(); await client.Task; });
         }
     }
 }
