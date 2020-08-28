@@ -6,26 +6,26 @@ namespace NetMQ.High.Engines
 {
     public class ClientSafeEngine : ClientEngine
     {
-        public TaskCompletionSource<object> Task { get; }
+        public TaskCompletionSource<object> Source { get; set; }
 
         public ClientSafeEngine(
             ISerializer serializer, 
-            NetMQQueue<OutgoingMessage> outgoingQueue, 
-            TaskCompletionSource<object> task,
+            NetMQQueue<OutgoingMessage> outgoingQueue,
             string address) 
-            : base(serializer, outgoingQueue, address) => 
-                Task = task;
+            : base(serializer, outgoingQueue, address) { }
 
         protected override void Initialize()
         {
+            Source = new TaskCompletionSource<object>();
+
             try
             {
                 base.Initialize();
-                Task.SetResult(null);
+                Source.SetResult(null);
             }
             catch (Exception e)
             {
-                Task.SetException(e);
+                Source.SetException(e);
             }
         }
     }

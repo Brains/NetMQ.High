@@ -10,10 +10,9 @@ namespace NetMQ.High
 
         public new Task Connect(string address)
         {
-            var task = new TaskCompletionSource<object>();
-            var engine = new ClientSafeEngine(serializer, m_outgoingQueue, task, address);
+            var engine = new ClientSafeEngine(serializer, m_outgoingQueue, address);
             m_actor = NetMQActor.Create(engine);
-            return task.Task;
+            return engine.Source.Task;
         }
     }
 }
