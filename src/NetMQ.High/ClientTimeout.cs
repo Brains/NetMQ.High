@@ -9,7 +9,7 @@ namespace NetMQ.High
     {
         readonly int timeout;
 
-        public ClientTimeout(int timeout) => this.timeout = timeout;
+        public ClientTimeout(int timeout, string address) : base(address) => this.timeout = timeout;
 
         // Answer by Lawrence Johnston at https://stackoverflow.com/questions/4238345/asynchronously-wait-for-taskt-to-complete-with-timeout
         static async Task<TResult> TimeoutAfter<TResult>(Task<TResult> task, TimeSpan timeout)
