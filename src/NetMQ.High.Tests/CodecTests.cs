@@ -47,8 +47,8 @@ namespace NetMQ.High.Tests
 				Assert.That(m.Message.ConnectionId, Is.EqualTo(123));           
 			};
 			
-			using (var client = new DealerSocket("inproc://zprototest"))
 			using (var server = new RouterSocket("inproc://zprototest"))
+			using (var client = new DealerSocket("inproc://zprototest"))
 			{
 				Codec clientMessage = new Codec();
 				Codec serverMessage = new Codec();
@@ -95,8 +95,8 @@ namespace NetMQ.High.Tests
 				Assert.That(m.ServiceRegister.Service, Is.EqualTo("Life is short but Now lasts for ever"));                
 			};
 			
-			using (var client = new DealerSocket("inproc://zprototest"))
 			using (var server = new RouterSocket("inproc://zprototest"))
+            using (var client = new DealerSocket("inproc://zprototest"))
 			{
 				Codec clientMessage = new Codec();
 				Codec serverMessage = new Codec();
@@ -145,8 +145,8 @@ namespace NetMQ.High.Tests
 				Assert.That(m.Error.ConnectionId, Is.EqualTo(123));             
 			};
 			
-			using (var client = new DealerSocket("inproc://zprototest"))
 			using (var server = new RouterSocket("inproc://zprototest"))
+            using (var client = new DealerSocket("inproc://zprototest"))
 			{
 				Codec clientMessage = new Codec();
 				Codec serverMessage = new Codec();
