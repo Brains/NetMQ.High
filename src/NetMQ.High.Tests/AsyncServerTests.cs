@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -36,13 +36,6 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void Init_MissingEndpoint_NotFails()
-        {
-            using (var server = new AsyncServerSafe(new Handler()))
-                Assert.DoesNotThrow(() => { server.Init(); server.Bind("inproc://test"); });
-        }
-
-        [Test]
         public void AwaitClientTask_NullAddress_ThrowsNullReferenceException()
         {
             using (var server = new AsyncServerSafe(new Handler()))
@@ -64,14 +57,6 @@ namespace NetMQ.High.Tests
             using (var server = new AsyncServerSafe(new Handler()))
                 Assert.Throws<ArgumentOutOfRangeException>(
                     async () => { server.Init(); server.Bind("abc"); await server.Task; });
-        }
-
-        [Test]
-        public void AwaitClientTask_MissingEndpoint_ThrowsEndpointNotFoundException()
-        {
-            using (var server = new AsyncServerSafe(new Handler()))
-                Assert.Throws<EndpointNotFoundException>(
-                    async () => { server.Init(); server.Bind("inproc://test"); await server.Task; });
         }
     }
 }
