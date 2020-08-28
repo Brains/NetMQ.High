@@ -39,6 +39,7 @@ namespace NetMQ.High.Tests
             var serverHandler = new Handler();
             using (AsyncServer server = new AsyncServer(serverHandler))
             {
+                server.Init();
                 server.Bind("tcp://*:6666");
                 using (Client client = new Client("tcp://localhost:6666"))
                 {

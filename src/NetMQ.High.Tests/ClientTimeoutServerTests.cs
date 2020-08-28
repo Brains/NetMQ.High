@@ -27,6 +27,7 @@ namespace NetMQ.High.Tests
             var handler = new DelayedHandler(1000);
             using (var server = new AsyncServer(handler))
             {
+                server.Init();
                 server.Bind("tcp://*:6666");
                 using (var client = new ClientTimeout(2000, "tcp://localhost:6666"))
                 {
