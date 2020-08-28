@@ -5,7 +5,15 @@ namespace NetMQ.High
 {
     public class ClientSafe : Client
     {
-        public ClientSafe(string address) : base(address) { }
+        public TaskCompletionSource<object> Source { get; }
+        public Task Task => Source.Task;
+        public ClientSafeEngine ServerEngine { get; set; }
+
+        public ClientSafe(string address) : base(address)
+        {
+            Source = new TaskCompletionSource<object>();
+            ServerEngine = new ClientSafeEngine(Serializer, m_outgoingQueue, Address, Source);
+        }
 
         public new Task Init()
         {

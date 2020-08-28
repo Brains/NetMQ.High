@@ -9,7 +9,7 @@ namespace NetMQ.High
     public class Client : IDisposable
     {
         protected readonly ISerializer Serializer;
-        protected string Address;
+        protected readonly string Address;
         protected NetMQActor m_actor;
         protected NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
 
