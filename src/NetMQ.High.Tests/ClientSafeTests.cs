@@ -30,6 +30,13 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
+        public void Init_MissingEndpoint_NotFails()
+        {
+            using (var client = new ClientSafe("inproc://test"))
+            Assert.DoesNotThrow(() => client.Init());
+        }
+
+        [Test]
         public void AwaitClientTask_NullAddress_ThrowsNullReferenceException()
         {
             using (var client = new ClientSafe(null))
@@ -56,6 +63,17 @@ namespace NetMQ.High.Tests
         {
             using (var client = new ClientSafe("abc"))
                 Assert.Throws<ArgumentOutOfRangeException>(async () =>
+                {
+                    client.Init();
+                    await client.Task;
+                });
+        }
+
+        [Test]
+        public void AwaitClientTask_MissingEndpoint_ThrowsEndpointNotFoundException()
+        {
+            using (var client = new ClientSafe("inproc://test"))
+                Assert.Throws<EndpointNotFoundException>(async () =>
                 {
                     client.Init();
                     await client.Task;
