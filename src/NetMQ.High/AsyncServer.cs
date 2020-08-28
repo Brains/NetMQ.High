@@ -8,9 +8,9 @@ namespace NetMQ.High
 {
     public class AsyncServer : IDisposable
     {
-        readonly ISerializer serializer;
-        readonly IAsyncHandler asyncHandler;
-        private NetMQActor m_actor;
+        protected readonly ISerializer serializer;
+        protected readonly IAsyncHandler asyncHandler;
+        protected NetMQActor m_actor;
         public AsyncServerEngine ServerEngine;
 
         /// <summary>
