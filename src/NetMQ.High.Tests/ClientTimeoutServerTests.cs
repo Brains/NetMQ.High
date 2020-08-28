@@ -29,7 +29,7 @@ namespace NetMQ.High.Tests
             {
                 server.Init();
                 server.Bind("tcp://*:6666");
-                using (var client = new ClientTimeout(2000, "tcp://localhost:6666"))
+                using (var client = new ClientTimeout("tcp://localhost:6666", 2000))
                 {
                     client.Init();
                     var message = Encoding.ASCII.GetBytes("World");
@@ -46,8 +46,9 @@ namespace NetMQ.High.Tests
             var handler = new DelayedHandler(2000);
             using (var server = new AsyncServer(handler))
             {
+                server.Init();
                 server.Bind("tcp://*:6666");
-                using (var client = new ClientTimeout(1000, "tcp://localhost:6666"))
+                using (var client = new ClientTimeout("tcp://localhost:6666", 1000))
                 {
                     client.Init();
                     var message = Encoding.ASCII.GetBytes("World");
