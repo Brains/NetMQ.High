@@ -6,7 +6,9 @@ namespace NetMQ.High
 {
     public class ClientSafe : Client
     {
-        public new Task Init(string address)
+        public ClientSafe(string address) : base(address) { }
+
+        public new Task Init()
         {
             var engine = new ClientSafeEngine(serializer, m_outgoingQueue, address);
             m_actor = NetMQActor.Create(engine);
