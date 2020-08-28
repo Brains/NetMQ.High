@@ -32,5 +32,16 @@ namespace NetMQ.High.Tests
                     await client.Task;
                 });
         }
+
+        [Test]
+        public void AwaitClientTask_WithEmptyAddress_ThrowsArgumentOutOfRangeException()
+        {
+            using (var client = new ClientSafe(""))
+                Assert.Throws<ArgumentOutOfRangeException>(async () =>
+                {
+                    client.Init();
+                    await client.Task;
+                });
+        }
     }
 }
