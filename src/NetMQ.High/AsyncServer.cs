@@ -10,7 +10,7 @@ namespace NetMQ.High
     {
         protected readonly ISerializer serializer;
         protected readonly IAsyncHandler asyncHandler;
-        protected NetMQActor m_actor;
+        private NetMQActor m_actor;
         public AsyncServerEngine ServerEngine;
 
         /// <summary>
@@ -31,13 +31,11 @@ namespace NetMQ.High
         {
             this.serializer = serializer;
             this.asyncHandler = asyncHandler;
+            ServerEngine = new AsyncServerEngine(serializer, asyncHandler);
         }
 
-        public virtual void Init()
-        {
-            ServerEngine = new AsyncServerEngine(serializer, asyncHandler);
+        public void Init() => 
             m_actor = NetMQActor.Create(ServerEngine);
-        }
 
         /// <summary>
         /// Bind the server to a address. Server can be binded to multiple addresses

@@ -5,14 +5,8 @@ namespace NetMQ.High
 {
     public class AsyncServerSafe : AsyncServer
     {
-        public AsyncServerSafe(IAsyncHandler asyncHandler) : base(asyncHandler) { }
-
-        public override void Init()
-        {
-            var engine = new AsyncServerEngineSafe(serializer, asyncHandler);
-            m_actor = NetMQActor.Create(engine);
-            ServerEngine = engine;
-        }
+        public AsyncServerSafe(IAsyncHandler asyncHandler) : base(asyncHandler) => 
+            ServerEngine = new AsyncServerEngineSafe(serializer, asyncHandler);
 
         public new Task Bind(string address)
         {
