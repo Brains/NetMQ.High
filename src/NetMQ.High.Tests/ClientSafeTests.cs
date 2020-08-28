@@ -14,5 +14,16 @@ namespace NetMQ.High.Tests
             using (var client = new ClientSafe(null))
             Assert.DoesNotThrow(() => client.Init());
         }
+
+        [Test]
+        public void AwaitClientTask_WithNullAddress_ThrowsNullReferenceException()
+        {
+            using (var client = new ClientSafe(null))
+                Assert.Throws<NullReferenceException>(async () =>
+                {
+                    client.Init();
+                    await client.Task;
+                });
+        }
     }
 }
