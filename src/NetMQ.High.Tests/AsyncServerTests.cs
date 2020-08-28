@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace NetMQ.High.Tests
@@ -6,64 +7,71 @@ namespace NetMQ.High.Tests
     [TestFixture]
     class AsyncServerTests
     {
+        class Handler : IAsyncHandler
+        {
+            public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body) { }
+            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body) =>
+                new byte[] { };
+        }
+
         [Test]
         public void Init_NullAddress_NotFails()
         {
-            using (var client = new ClientSafe(null))
-                Assert.DoesNotThrow(() => client.Init());
+            using (var server = new AsyncServerSafe(new Handler()))
+                Assert.DoesNotThrow(() => { server.Init(); server.Bind(null); });
         }
 
         [Test]
         public void Init_EmptyAddress_NotFails()
         {
-            using (var client = new ClientSafe(""))
-                Assert.DoesNotThrow(() => client.Init());
+            using (var server = new AsyncServerSafe(new Handler()))
+                Assert.DoesNotThrow(() => { server.Init(); server.Bind(""); });
         }
 
         [Test]
         public void Init_InvalidAddress_NotFails()
         {
-            using (var client = new ClientSafe("abc"))
-                Assert.DoesNotThrow(() => client.Init());
+            using (var server = new AsyncServerSafe(new Handler()))
+                Assert.DoesNotThrow(() => { server.Init(); server.Bind("abc"); });
         }
 
         [Test]
         public void Init_MissingEndpoint_NotFails()
         {
-            using (var client = new ClientSafe("inproc://test"))
-                Assert.DoesNotThrow(() => client.Init());
+            using (var server = new AsyncServerSafe(new Handler()))
+                Assert.DoesNotThrow(() => { server.Init(); server.Bind("inproc://test"); });
         }
 
         [Test]
         public void AwaitClientTask_NullAddress_ThrowsNullReferenceException()
         {
-            using (var client = new ClientSafe(null))
+            using (var server = new AsyncServerSafe(new Handler()))
                 Assert.Throws<NullReferenceException>(
-                    async () => { client.Init(); await client.Task; });
+                    async () => { server.Init(); server.Bind(null); await server.Task; });
         }
 
         [Test]
         public void AwaitClientTask_EmptyAddress_ThrowsArgumentOutOfRangeException()
         {
-            using (var client = new ClientSafe(""))
+            using (var server = new AsyncServerSafe(new Handler()))
                 Assert.Throws<ArgumentOutOfRangeException>(
-                    async () => { client.Init(); await client.Task; });
+                    async () => { server.Init(); server.Bind(""); await server.Task; });
         }
 
         [Test]
         public void AwaitClientTask_InvalidAddress_ThrowsArgumentOutOfRangeException()
         {
-            using (var client = new ClientSafe("abc"))
+            using (var server = new AsyncServerSafe(new Handler()))
                 Assert.Throws<ArgumentOutOfRangeException>(
-                    async () => { client.Init(); await client.Task; });
+                    async () => { server.Init(); server.Bind("abc"); await server.Task; });
         }
 
         [Test]
         public void AwaitClientTask_MissingEndpoint_ThrowsEndpointNotFoundException()
         {
-            using (var client = new ClientSafe("inproc://test"))
+            using (var server = new AsyncServerSafe(new Handler()))
                 Assert.Throws<EndpointNotFoundException>(
-                    async () => { client.Init(); await client.Task; });
+                    async () => { server.Init(); server.Bind("inproc://test"); await server.Task; });
         }
     }
 }
