@@ -6,22 +6,22 @@ namespace NetMQ.High.Engines
 {
     public class AsyncServerEngineSafe : AsyncServerEngine
     {
-        public AsyncServerEngineSafe(ISerializer serializer, IAsyncHandler asyncHandler)
-            : base(serializer, asyncHandler) => 
-                Source = new TaskCompletionSource<object>();
+        readonly TaskCompletionSource<object> source;
 
-        public TaskCompletionSource<object> Source { get; set; }
+        public AsyncServerEngineSafe(ISerializer serializer, IAsyncHandler asyncHandler, TaskCompletionSource<object> source)
+            : base(serializer, asyncHandler) => 
+                this.source = source;
 
         protected override void OnShimCommand(string command)
         {
             try
             {
                 base.OnShimCommand(command);
-                Source.SetResult(null);
+                source.SetResult(null);
             }
             catch (Exception e)
             {
-                Source.SetException(e);
+                source.SetException(e);
             }
         }
 
