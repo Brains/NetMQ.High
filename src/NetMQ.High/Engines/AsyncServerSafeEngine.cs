@@ -4,11 +4,11 @@ using NetMQ.High.Serializers;
 
 namespace NetMQ.High.Engines
 {
-    public class AsyncServerEngineSafe : AsyncServerEngine
+    public class AsyncServerSafeEngine : AsyncServerEngine
     {
         readonly TaskCompletionSource<object> source;
 
-        public AsyncServerEngineSafe(ISerializer serializer, IAsyncHandler asyncHandler, TaskCompletionSource<object> source)
+        public AsyncServerSafeEngine(ISerializer serializer, IAsyncHandler asyncHandler, TaskCompletionSource<object> source)
             : base(serializer, asyncHandler) => 
                 this.source = source;
 
