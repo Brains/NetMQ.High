@@ -1,18 +1,16 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using NetMQ.High.Engines;
 
 namespace NetMQ.High
 {
     public class AsyncServerSafe : AsyncServer
     {
-        public AsyncServerSafe(IAsyncHandler asyncHandler) : base(asyncHandler) { }
-
-        public new Task Init()
+        public TaskCompletionSource<object> Source { get; set; }
+        public Task Task => Source.Task;
+        public AsyncServerSafe(IAsyncHandler handler) : base(handler)
         {
-            var engine = new AsyncServerEngineSafe(serializer, asyncHandler);
-            m_actor = NetMQActor.Create(engine);
-            ServerEngine = engine;
-            return engine.Source.Task;
+            Source = new TaskCompletionSource<object>();
+            ServerEngine = new AsyncServerEngineSafe(serializer, handler, Source);
         }
     }
 }
