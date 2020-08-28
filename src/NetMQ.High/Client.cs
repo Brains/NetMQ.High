@@ -22,7 +22,7 @@ namespace NetMQ.High
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
         }
 
-        public virtual void Connect(string address)
+        public virtual void Init(string address)
         {
             var clientEngine = new ClientEngine(serializer, m_outgoingQueue, address);
             m_actor = NetMQActor.Create(clientEngine);

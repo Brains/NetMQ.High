@@ -43,7 +43,7 @@ namespace NetMQ.High.Tests
                 using (Client client = new Client())
                 {
                     // client to server
-                    client.Connect("tcp://localhost:6666");
+                    client.Init("tcp://localhost:6666");
                     var message = Encoding.ASCII.GetBytes("World");
                     var reply = client.SendRequestAsync("Hello", message).Result;
                     Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");

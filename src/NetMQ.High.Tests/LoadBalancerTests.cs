@@ -33,7 +33,7 @@ namespace NetMQ.High.Tests
             using (var client = new Client())
             using (var worker = new Worker(new Handler(), "tcp://localhost:5558"))
             {
-                client.Connect("tcp://localhost:5557");
+                client.Init("tcp://localhost:5557");
                 worker.Register("Hello");
 
                 // Wait for the lb to process the register
