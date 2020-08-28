@@ -9,21 +9,28 @@ namespace NetMQ.High.Tests
     class ClientSafeTests
     {
         [Test]
-        public void Init_WithNullAddress_NotFails()
+        public void Init_NullAddress_NotFails()
         {
             using (var client = new ClientSafe(null))
             Assert.DoesNotThrow(() => client.Init());
         }
 
         [Test]
-        public void Init_WithEmptyAddress_NotFails()
+        public void Init_EmptyAddress_NotFails()
         {
             using (var client = new ClientSafe(""))
             Assert.DoesNotThrow(() => client.Init());
         }
 
         [Test]
-        public void AwaitClientTask_WithNullAddress_ThrowsNullReferenceException()
+        public void Init_InvalidAddress_NotFails()
+        {
+            using (var client = new ClientSafe("abc"))
+            Assert.DoesNotThrow(() => client.Init());
+        }
+
+        [Test]
+        public void AwaitClientTask_NullAddress_ThrowsNullReferenceException()
         {
             using (var client = new ClientSafe(null))
                 Assert.Throws<NullReferenceException>(async () =>
@@ -34,9 +41,20 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void AwaitClientTask_WithEmptyAddress_ThrowsArgumentOutOfRangeException()
+        public void AwaitClientTask_EmptyAddress_ThrowsArgumentOutOfRangeException()
         {
             using (var client = new ClientSafe(""))
+                Assert.Throws<ArgumentOutOfRangeException>(async () =>
+                {
+                    client.Init();
+                    await client.Task;
+                });
+        }
+
+        [Test]
+        public void AwaitClientTask_InvalidAddress_ThrowsArgumentOutOfRangeException()
+        {
+            using (var client = new ClientSafe("abc"))
                 Assert.Throws<ArgumentOutOfRangeException>(async () =>
                 {
                     client.Init();
