@@ -5,7 +5,7 @@ using NetMQ.High.Engines;
 
 namespace NetMQ.High
 {
-    public class ClientTimeout : Client
+    public class ClientTimeout : ClientSafe
     {
         readonly int timeout;
 
