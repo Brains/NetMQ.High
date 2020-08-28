@@ -43,7 +43,7 @@ namespace NetMQ.High
         /// Bind the server to a address. Server can be binded to multiple addresses
         /// </summary>
         /// <param name="address"></param>
-        public void Bind(string address)
+        public virtual void Bind(string address)
         {
             lock (m_actor)
             {
