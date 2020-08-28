@@ -10,7 +10,7 @@ namespace NetMQ.High
 
         public new Task Init()
         {
-            var engine = new ClientSafeEngine(serializer, m_outgoingQueue, address);
+            var engine = new ClientSafeEngine(Serializer, m_outgoingQueue, Address);
             m_actor = NetMQActor.Create(engine);
             return engine.Source.Task;
         }
