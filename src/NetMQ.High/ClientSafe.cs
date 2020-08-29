@@ -11,7 +11,7 @@ namespace NetMQ.High
         public ClientSafe(string address) : base(address)
         {
             Source = new TaskCompletionSource<object>();
-            ServerEngine = new ClientSafeEngine(Serializer, m_outgoingQueue, Address, Source);
+            Engine = new ClientSafeEngine(Serializer, m_outgoingQueue, Address, Source);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace NetMQ.High
         public AsyncServerSafe(IAsyncHandler handler) : base(handler)
         {
             Source = new TaskCompletionSource<object>();
-            ServerEngine = new AsyncServerEngineSafe(serializer, handler, Source);
+            Engine = new AsyncServerEngineSafe(serializer, handler, Source);
         }
     }
 }

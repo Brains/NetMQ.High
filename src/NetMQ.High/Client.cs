@@ -10,7 +10,7 @@ namespace NetMQ.High
     {
         protected readonly ISerializer Serializer;
         protected readonly string Address;
-        protected ClientEngine ServerEngine;
+        protected ClientEngine Engine;
         protected NetMQActor m_actor;
         protected NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
 
@@ -24,17 +24,20 @@ namespace NetMQ.High
             this.Serializer = serializer;
             this.Address = address;
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
-            ServerEngine = new ClientEngine(Serializer, m_outgoingQueue, Address);
+            Engine = new ClientEngine(Serializer, m_outgoingQueue, Address);
         }
 
         public void Init() => 
-            m_actor = NetMQActor.Create(ServerEngine);
+            m_actor = NetMQActor.Create(Engine);
 
         /// <summary>
         /// Create new client with default serializer
         /// </summary>
         /// <param name="address">Address of the server</param>
-        public Client(string address) : this(Global.DefaultSerializer, address) { }
+        public Client(string address) : this(Global.DefaultSerializer, address)
+        {
+
+        }
 
         /// <summary>
         /// Send a request to the server and return the reply
