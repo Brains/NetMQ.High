@@ -15,6 +15,21 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
+        [Ignore]
+        public void Template()
+        {
+            //using (var server = new AsyncServer(new Handler()))
+            {
+                //server.Bind("inproc://test");
+                var client = new ClientSafe("inproc://test");
+                //client.Init();
+                //client.Task.Wait();
+                client.Dispose();
+                Assert.Throws<ArgumentNullException>(() => client.Dispose());
+            }
+        }
+
+        [Test]
         public void Dispose_NotInitialized_ThrowsFaultException()
         {
             //using (var server = new AsyncServer(new Handler()))
