@@ -30,11 +30,20 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
+        public void Dispose_Initialized_NotThrows()
+        {
+            var client = new ClientSafe("inproc://test");
+            client.Init();
+            Assert.DoesNotThrow(
+                () => client.Dispose());
+        }
+
+        [Test]
         public void Dispose_NotInitialized_ThrowsArgumentNullException()
         {
             var client = new ClientSafe("inproc://test");
-            client.Dispose();
-            Assert.Throws<ArgumentNullException>(() => client.Dispose());
+            Assert.Throws<ArgumentNullException>(
+                () => client.Dispose());
         }
 
         [Test]
