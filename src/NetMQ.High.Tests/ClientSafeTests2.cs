@@ -47,17 +47,14 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void Dispose_Twice_ThrowsFaultException()
+        public void Dispose_Initialized_Twice_ThrowsFaultException()
         {
-            //using (var server = new AsyncServer(new Handler()))
-            {
-                //server.Bind("inproc://test");
-                var client = new ClientSafe("inproc://test");
-                //client.Init();
-                //client.Task.Wait();
-                client.Dispose();
-                Assert.Throws<FaultException>(() => client.Dispose(), "Cannot close an uninitialised Msg.");
-            }
+            var client = new ClientSafe("inproc://test");
+            client.Init();
+            client.Dispose();
+            Assert.Throws<FaultException>(
+                () => client.Dispose(), 
+                "Cannot close an uninitialised Msg.");
         }
 
         [Test]
