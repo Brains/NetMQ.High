@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Pack package
-        run : dotnet pack .\source\Export.Word.fsproj -c Release -p:Version=$env:VERSION
+        run : dotnet pack .\src\NetMQ.High\NetMQ.High.csproj -c Release -p:Version=$env:VERSION
 
       - name: Install GPR tool
         run : dotnet tool update gpr -g
