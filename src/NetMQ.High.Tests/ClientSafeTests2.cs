@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace NetMQ.High.Tests
 {
-    public class ClientTests
+    public class ClientSafeTests2
     {
         class Handler : IAsyncHandler
         {
