@@ -1,0 +1,28 @@
+name: Publish NuGet
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  publish:
+    name   : Build and Publish NuGet package
+    runs-on: windows-latest
+    steps  :
+
+      - name : Get the version
+        run  : echo ::set-env name=VERSION::${GITHUB_REF#refs/tags/}
+        shell: bash
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Pack package
+        run : dotnet pack .\source\Export.Word.fsproj -c Release -p:Version=$env:VERSION
+
+      - name: Install GPR tool
+        run : dotnet tool update gpr -g
+
+      - name: Push generated package to the GitHub registry
+        run : gpr push .\source\bin\Release\Export.Word.$env:VERSION.nupkg -k ${{secrets.GITHUB_TOKEN}}
