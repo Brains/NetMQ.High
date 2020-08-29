@@ -7,9 +7,11 @@ using NetMQ.High.Serializers;
 namespace NetMQ.High
 {
     public class AsyncServer : IDisposable
-    {        
+    {
+        protected readonly ISerializer serializer;
+        protected readonly IAsyncHandler asyncHandler;
         private NetMQActor m_actor;
-        public AsyncServerEngine ServerEngine;
+        protected AsyncServerEngine Engine;
 
         /// <summary>
         /// Create new server with default serializer
@@ -27,21 +29,25 @@ namespace NetMQ.High
         /// <param name="asyncHandler">Handler to handle messages from client</param>
         public AsyncServer(ISerializer serializer, IAsyncHandler asyncHandler)
         {
-            ServerEngine = new AsyncServerEngine(serializer, asyncHandler);
-            m_actor = NetMQActor.Create(ServerEngine);
+            this.serializer = serializer;
+            this.asyncHandler = asyncHandler;
+            Engine = new AsyncServerEngine(serializer, asyncHandler);
         }
+
+        public void Init() => 
+            m_actor = NetMQActor.Create(Engine);
 
         /// <summary>
         /// Bind the server to a address. Server can be binded to multiple addresses
         /// </summary>
         /// <param name="address"></param>
-        public void Bind(string address)
+        public virtual void Bind(string address)
         {
             lock (m_actor)
             {
                 m_actor.SendMoreFrame(AsyncServerEngine.BindCommand).SendFrame(address);
             }
-        }       
+        }
 
         public void Dispose()
         {

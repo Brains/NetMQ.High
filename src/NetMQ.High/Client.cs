@@ -8,7 +8,10 @@ namespace NetMQ.High
 {
     public class Client : IDisposable
     {
-        private NetMQActor m_actor;
+        protected readonly ISerializer Serializer;
+        protected readonly string Address;
+        protected ClientEngine Engine;
+        protected NetMQActor m_actor;
         protected NetMQQueue<ClientEngine.OutgoingMessage> m_outgoingQueue;
 
         /// <summary>
@@ -18,9 +21,14 @@ namespace NetMQ.High
         /// <param name="address">Address of the server</param>
         public Client(ISerializer serializer, string address)
         {
+            this.Serializer = serializer;
+            this.Address = address;
             m_outgoingQueue = new NetMQQueue<ClientEngine.OutgoingMessage>();
-            m_actor = NetMQActor.Create(new ClientEngine(serializer, m_outgoingQueue, address));
+            Engine = new ClientEngine(Serializer, m_outgoingQueue, Address);
         }
+
+        public void Init() => 
+            m_actor = NetMQActor.Create(Engine);
 
         /// <summary>
         /// Create new client with default serializer
