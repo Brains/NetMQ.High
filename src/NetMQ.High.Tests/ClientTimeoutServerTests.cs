@@ -57,5 +57,32 @@ namespace NetMQ.High.Tests
                 }
             }
         }
+
+
+        [Test]
+        public void SendRequestAsync_NotConnected_NotThrows()
+        {
+            using (var client = new ClientTimeout("inproc://test", 2000))
+            {
+                client.Init();
+                Task.Delay(1000).Wait(); // Simulate delay to press a button in UI
+                Assert.DoesNotThrow(
+                    () => client.SendRequestAsync("serice", Encoding.ASCII.GetBytes("World")));
+            }
+        }
+
+        [Test]
+        public void SendRequestAsync_NotConnected_Disposed_Blocks()
+        {
+            using (var client = new ClientTimeout("inproc://test", 2000))
+            {
+                client.Init();
+                client.Dispose();
+                Task.Delay(1000).Wait(); // Simulate delay to press a button in UI
+
+                // Block on m_outgoingQueue.Enqueue(outgoingMessage) // Enqueue an item to the queue, will block if the queue is full.
+                client.SendRequestAsync("serice", Encoding.ASCII.GetBytes("World"));
+            }
+        }
     }
 }
