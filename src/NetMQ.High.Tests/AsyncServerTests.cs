@@ -10,8 +10,8 @@ namespace NetMQ.High.Tests
         class Handler : IAsyncHandler
         {
             public void HandleOneWay(ulong messageId, uint connectionId, string service, byte[] body) { }
-            public async Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body) =>
-                new byte[] { };
+            public Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body) =>
+                Task.FromResult(new byte[] { });
         }
 
         [Test]
