@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -71,5 +71,18 @@ namespace NetMQ.High.Tests
             }
         }
 
+        [Test]
+        public void SendRequestAsync_NotConnected_Disposed_Blocks()
+        {
+            using (var client = new ClientTimeout("inproc://test", 2000))
+            {
+                client.Init();
+                client.Dispose();
+                Task.Delay(1000).Wait(); // Simulate delay to press a button in UI
+
+                // Block on m_outgoingQueue.Enqueue(outgoingMessage) // Enqueue an item to the queue, will block if the queue is full.
+                client.SendRequestAsync("serice", Encoding.ASCII.GetBytes("World"));
+            }
+        }
     }
 }
