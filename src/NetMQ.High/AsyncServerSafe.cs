@@ -5,13 +5,13 @@ namespace NetMQ.High
 {
     public class AsyncServerSafe : AsyncServer
     {
-        public TaskCompletionSource<object> Source { get; }
-        public Task Task => Source.Task;
+        private readonly TaskCompletionSource<object> source;
+        public Task Task => source.Task;
 
         public AsyncServerSafe(IAsyncHandler handler) : base(handler)
         {
-            Source = new TaskCompletionSource<object>();
-            Engine = new AsyncServerEngineSafe(serializer, handler, Source);
+            source = new TaskCompletionSource<object>();
+            Engine = new AsyncServerEngineSafe(serializer, handler, source);
         }
     }
 }
