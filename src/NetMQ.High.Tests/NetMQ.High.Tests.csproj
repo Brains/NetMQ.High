@@ -45,7 +45,7 @@
     <Compile Include="AsyncServerTests.cs" />
     <Compile Include="ClientSafeTests.cs" />
     <Compile Include="ClientServerTests.cs" />
-    <Compile Include="ClientSafeTests2.cs" />
+    <Compile Include="ClientSafeDisposeTests.cs" />
     <Compile Include="CodecTests.cs" />
     <Compile Include="JsonSerializerTests.cs" />
     <Compile Include="LoadBalancerTests.cs" />
