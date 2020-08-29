@@ -17,7 +17,7 @@ namespace NetMQ.High.Engines
             try
             {
                 base.Initialize();
-                source.SetResult(null);
+                source.SetResult(null);  //Null means success (only generic TaskCompletionSource exists)
             }
             catch (Exception e)
             {

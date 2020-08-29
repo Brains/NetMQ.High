@@ -27,7 +27,7 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        [Ignore("Failed after commit: Updated by Jeremiah Jeschke")]
+        [Ignore("Failed after commit 'Updated' by Jeremiah Jeschke")]
         public void RequestResponse()
         {
             using (var lb = new LoadBalancer("tcp://*:5557", "tcp://*:5558"))

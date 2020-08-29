@@ -5,8 +5,8 @@ namespace NetMQ.High
 {
     public class ClientSafe : Client
     {
-        private readonly TaskCompletionSource<object> source;
-        public Task Task => source.Task;
+        private readonly TaskCompletionSource<object> source; // Only generic TaskCompletionSource exists
+        public Task Task => source.Task;  // To await until ClientSafeEngine sets a Result or Exception
 
         public ClientSafe(string address) : base(address)
         {
