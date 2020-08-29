@@ -21,7 +21,7 @@ namespace NetMQ.High.Tests
             //using (var server = new AsyncServer(new Handler()))
             {
                 //server.Bind("inproc://test");
-                var client = new ClientSafe("inproc://test");
+                var client = new Client("inproc://test");
                 //client.Init();
                 //client.Task.Wait();
                 client.Dispose();
@@ -32,7 +32,7 @@ namespace NetMQ.High.Tests
         [Test]
         public void Dispose_Initialized_NotThrows()
         {
-            var client = new ClientSafe("inproc://test");
+            var client = new Client("inproc://test");
             client.Init();
             Assert.DoesNotThrow(
                 () => client.Dispose());
@@ -41,7 +41,7 @@ namespace NetMQ.High.Tests
         [Test]
         public void Dispose_NotInitialized_ThrowsArgumentNullException()
         {
-            var client = new ClientSafe("inproc://test");
+            var client = new Client("inproc://test");
             Assert.Throws<ArgumentNullException>(
                 () => client.Dispose());
         }
@@ -52,7 +52,7 @@ namespace NetMQ.High.Tests
             //using (var server = new AsyncServer(new Handler()))
             {
                 //server.Bind("inproc://test");
-                var client = new ClientSafe("inproc://test");
+                var client = new Client("inproc://test");
                 //client.Init();
                 //client.Task.Wait();
                 client.Dispose();
@@ -66,7 +66,7 @@ namespace NetMQ.High.Tests
             //using (var server = new AsyncServer(new Handler()))
             {
                 //server.Bind("inproc://test");
-                var client = new ClientSafe("inproc://test");
+                var client = new Client("inproc://test");
                 client.Init();
                 //client.Task.Wait();
                 client.Dispose();
@@ -77,7 +77,7 @@ namespace NetMQ.High.Tests
         [Test]
         public void SendRequestAsync_DisposedClient_()
         {
-            var client = new ClientSafe("inproc://test");
+            var client = new Client("inproc://test");
             client.Init();
             // client.Task.Wait();
             client.Dispose();
