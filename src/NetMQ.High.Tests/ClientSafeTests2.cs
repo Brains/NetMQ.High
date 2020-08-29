@@ -39,14 +39,6 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        public void Dispose_NotInitialized_ThrowsArgumentNullException()
-        {
-            var client = new ClientSafe("inproc://test");
-            Assert.Throws<ArgumentNullException>(
-                () => client.Dispose());
-        }
-
-        [Test]
         public void Dispose_Initialized_Twice_ThrowsFaultException()
         {
             var client = new ClientSafe("inproc://test");
@@ -55,6 +47,14 @@ namespace NetMQ.High.Tests
             Assert.Throws<FaultException>(
                 () => client.Dispose(), 
                 "Cannot close an uninitialised Msg.");
+        }
+
+        [Test]
+        public void Dispose_NotInitialized_ThrowsArgumentNullException()
+        {
+            var client = new ClientSafe("inproc://test");
+            Assert.Throws<ArgumentNullException>(
+                () => client.Dispose());
         }
 
         [Test]
