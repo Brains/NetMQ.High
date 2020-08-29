@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Pack package
-        run : dotnet pack ${{github.workspace}}\src\NetMQ.High\NetMQ.High.csproj -c Release -p:Version=$env:VERSION
+        run : dotnet pack .\src\NetMQ.High\NetMQ.High.csproj -c Release -p:Version=$env:VERSION
 
       - name: Push generated package to public NuGet registry
-        run : dotnet nuget push ${{github.workspace}}\src\NetMQ.High\bin\Release\NetMQ.High.$env:VERSION.nupkg --api-key oy2khyp2vfs36rvdzana4vwj35cg6znudem57cvzuxdfkm --source https://api.nuget.org/v3/index.json
+        run : dotnet nuget push .\src\NetMQ.High\bin\Release\NetMQ.High.$env:VERSION.nupkg --api-key oy2khyp2vfs36rvdzana4vwj35cg6znudem57cvzuxdfkm --source https://api.nuget.org/v3/index.json
