@@ -10,8 +10,9 @@ namespace NetMQ.High
     {
         protected readonly ISerializer serializer;
         protected readonly IAsyncHandler asyncHandler;
-        private NetMQActor m_actor;
-        protected AsyncServerEngine Engine;
+        public NetMQActor m_actor;
+        public AsyncServerEngine Engine;
+        public bool disposed = false;
 
         /// <summary>
         /// Create new server with default serializer
@@ -32,6 +33,7 @@ namespace NetMQ.High
             this.serializer = serializer;
             this.asyncHandler = asyncHandler;
             Engine = new AsyncServerEngine(serializer, asyncHandler);
+            disposed = false;
         }
 
         public void Init() => 
@@ -54,6 +56,7 @@ namespace NetMQ.High
             lock (m_actor)
             {
                 m_actor.Dispose();
+                disposed = true;
             }
         }
     }

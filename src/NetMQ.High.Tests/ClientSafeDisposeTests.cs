@@ -15,7 +15,6 @@ namespace NetMQ.High.Tests
         }
 
         [Test]
-        [Ignore]
         public void Template()
         {
             using (var server = new AsyncServer(new Handler()))

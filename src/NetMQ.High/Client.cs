@@ -49,7 +49,6 @@ namespace NetMQ.High
         async Task RaiseEventWhenTaskCompleted(Task task)
         {
             await task;
-            Console.WriteLine("Completed task");
         }
 
         public virtual Task<byte[]> SendRequestAsync(string service, byte[] message)

@@ -4,7 +4,7 @@ namespace NetMQ.High.Engines
 {
     public abstract class BaseEngine : IShimHandler
     {
-        protected NetMQPoller Poller { get; private set; }
+        public NetMQPoller Poller { get; private set; }
         public PairSocket Shim { get; private set; }
         public Codec Codec { get; }
 

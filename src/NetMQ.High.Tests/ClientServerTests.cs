@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace NetMQ.High.Tests
 {
     [TestFixture]
-    class ClientServerTests
+    public class ClientServerTests
     {
         class Handler : IAsyncHandler
         {
@@ -20,6 +20,7 @@ namespace NetMQ.High.Tests
             public Task<byte[]> HandleRequestAsync(ulong messageId, uint connectionId, string service, byte[] body)
             {
                 ConnectionId = connectionId;
+                Console.WriteLine(Encoding.ASCII.GetString(body));
                 return Task.FromResult(Encoding.ASCII.GetBytes("Welcome"));
             }
 
@@ -44,8 +45,10 @@ namespace NetMQ.High.Tests
                     // client to server
                     client.Init();
                     var message = Encoding.ASCII.GetBytes("World");
-                    var reply = client.SendRequestAsync("Hello", message).Result;
-                    Assert.That(Encoding.ASCII.GetString(reply) == "Welcome");
+                    var res = client.SendRequestAsync("Hello", message).Result;
+                    var reply = Encoding.ASCII.GetString(res);
+                    Console.WriteLine("Reply: " + reply);
+                    Assert.That(reply == "Welcome");
                 }
             }
         }
