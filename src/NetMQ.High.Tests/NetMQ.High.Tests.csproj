@@ -42,7 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncServerTests.cs" />
+    <Compile Include="AsyncServerSafeTests.cs" />
     <Compile Include="ClientSafeTests.cs" />
     <Compile Include="ClientServerTests.cs" />
     <Compile Include="ClientSafeDisposeTests.cs" />
